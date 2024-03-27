@@ -2,6 +2,7 @@
 SHEET_USELESS_TABS = [
         "Instrucciones",
         "CCCEXP",
+        "CCC/EXP",
         "Retrasos 1ªh"
 ]
 

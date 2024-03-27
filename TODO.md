@@ -58,6 +58,7 @@
 - export en excel para retrasos en la última pestaña del excel (o colab). Es decir, añadir output de retrasos para logear las sanciones.
 - repensar jerarquía de directorios para writers, es decir, repensar que writers quiero y como llamarlos (modo consola, ficheros, excel, colab...)
 - En el output de proceedings, cambiar nombre de columnas, añadir datos viejos, y calcular nuevos expedientes
+- Exportar colores con excel formateado
 
 
 - RENAME: nombre funciones CEG: 

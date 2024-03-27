@@ -1,4 +1,5 @@
 from . import settings as S
+from datetime import datetime
 
 def preprocess_tab(df, group_name):
 
@@ -20,8 +21,13 @@ def preprocess_tab(df, group_name):
     df = df[S.SHEET_VALID_COLUMNS_RENAMED]
 
     # Convert datetime objects to date (without the time)
-    df[S.COLUMN_NAME_DATE_OF_EVENT] = [dt.date() for dt in df[S.COLUMN_NAME_DATE_OF_EVENT]]
-    df[S.COLUMN_NAME_DATE_OF_RECORD] = [dt.date() for dt in df[S.COLUMN_NAME_DATE_OF_RECORD]]
+    format_str = '%d/%m/%Y'
+    df[S.COLUMN_NAME_DATE_OF_EVENT] = [
+        datetime.strptime(ds, format_str).date() for ds in df[S.COLUMN_NAME_DATE_OF_EVENT]
+    ]
+    df[S.COLUMN_NAME_DATE_OF_RECORD] = [
+        datetime.strptime(ds, format_str).date() for ds in df[S.COLUMN_NAME_DATE_OF_RECORD]
+    ]
 
     # Add a column with the group name
     df[S.COLUMN_NAME_GROUP] = group_name
