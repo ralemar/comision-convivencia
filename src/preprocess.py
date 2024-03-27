@@ -21,12 +21,14 @@ def preprocess_tab(df, group_name):
     df = df[S.SHEET_VALID_COLUMNS_RENAMED]
 
     # Convert datetime objects to date (without the time)
-    format_str = '%d/%m/%Y'
+    fmt = "%d/%m/%Y"
     df[S.COLUMN_NAME_DATE_OF_EVENT] = [
-        datetime.strptime(ds, format_str).date() for ds in df[S.COLUMN_NAME_DATE_OF_EVENT]
+        datetime.strptime(ds, fmt).date() for ds in df[S.COLUMN_NAME_DATE_OF_EVENT]
     ]
+
+    fmt = "%d/%m/%Y  %H:%M:%S"
     df[S.COLUMN_NAME_DATE_OF_RECORD] = [
-        datetime.strptime(ds, format_str).date() for ds in df[S.COLUMN_NAME_DATE_OF_RECORD]
+        datetime.strptime(ds, fmt).date() for ds in df[S.COLUMN_NAME_DATE_OF_RECORD]
     ]
 
     # Add a column with the group name

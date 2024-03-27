@@ -36,17 +36,19 @@ def read_excel():
     # Undo the mess excel prepares with the dates
     for df in raw_dataframes.values():
         new_date_of_event = []
+        fmt = "%d/%m/%Y"
         for dt in df[S.ORIGINAL_COLUMN_NAME_DATE_OF_EVENT]:
             if hasattr(dt, "strftime"):
-                new_date_of_event.append(dt.strftime('%d/%m/%Y'))
+                new_date_of_event.append(dt.strftime(fmt))
             else:
                 new_date_of_event.append(dt)
         df[S.ORIGINAL_COLUMN_NAME_DATE_OF_EVENT] = new_date_of_event
 
         new_date_of_record = []
+        fmt = "%d/%m/%Y  %H:%M:%S"
         for dt in df[S.ORIGINAL_COLUMN_NAME_DATE_OF_RECORD]:
             if hasattr(dt, "strftime"):
-                new_date_of_record.append(dt.strftime('%d/%m/%Y'))
+                new_date_of_record.append(dt.strftime(fmt))
             else:
                 new_date_of_record.append(dt)
         df[S.ORIGINAL_COLUMN_NAME_DATE_OF_RECORD] = new_date_of_record
