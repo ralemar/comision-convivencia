@@ -1,19 +1,3 @@
-from pathlib import Path
-
-INPUTS_PATH = Path("inputs")
-CHECKPOINTS_PATH = INPUTS_PATH / "checkpoints.txt"
-DATES_PATH = INPUTS_PATH / "fechas.txt"
-XLSX_FILEPATH = INPUTS_PATH / "data.xlsx"
-PROCEEDINGS_DATE_PATH = INPUTS_PATH / "fechas_expedientes.txt"
-
-OUTPUTS_PATH = Path("outputs")
-COLORS_SUBDIR = Path("colores")
-TARDIES_SUBDIR = Path("retrasos")
-
-TMP_PATH = Path("tmp")
-SRC_PATH = Path("src")
-NOTIFICATION_PATH = SRC_PATH / "notificacion"
-
 ##### EXCEL USELESS TABS
 SHEET_USELESS_TABS = [
         "Instrucciones",
@@ -48,14 +32,6 @@ SHEET_VALID_COLUMNS_RENAMED = [
         COLUMN_NAME_EVENT,
         COLUMN_NAME_DATE_OF_RECORD
 ]
-
-
-STATE_TO_COLOR = {
-    -2: "ROJO",
-    -1: "AMARILLO",
-    0: "VERDE",
-    1: "AZUL"
-}
 
 
 ###### STRINGS THAT DEFINE EVENTS

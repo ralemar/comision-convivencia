@@ -1,5 +1,4 @@
 from . import settings as S
-from datetime import timedelta
 
 
 def get_number_of_CCCs(student_df):
@@ -24,7 +23,7 @@ def get_number_of_CCC_proceedings(number_of_CCCs):
     else:
         return 1 + (number_of_CCCs - 6)//3
 
-def get_proceedings(student_df):
+def get_student_status(student_df):
 
     N_CCCs = get_number_of_CCCs(student_df)
     N_CEGs = get_number_of_CEGs(student_df)
@@ -33,27 +32,23 @@ def get_proceedings(student_df):
     return N_CEGs, N_CCCs, N_CCC_proceedings
 
 
-def process_proceedings(
+def process_student(
     student_df, 
-    review_date, 
-    comparison_date
+    meeting_date, 
+    comparison_date=None
 ):
 
-    # Unpack data
-    student_name = student_df[S.COLUMN_NAME_STUDENT].iloc[0]
-    group_name = student_df[S.COLUMN_NAME_GROUP].iloc[0]
-
     # Get rid of posterior dates
-    mask = (student_df[S.COLUMN_NAME_DATE_OF_RECORD] < review_date)
+    mask = (student_df[S.COLUMN_NAME_DATE_OF_RECORD] <= meeting_date)
     filtered_df = student_df[mask]
-    proceedings_data = get_proceedings(filtered_df)
+    proceedings_data = get_student_status(filtered_df)
 
     # Compare with previous data if comparison date is provided
     if comparison_date:
 
         mask = (student_df[S.COLUMN_NAME_DATE_OF_RECORD] < comparison_date)
         filtered_df = student_df[mask]
-        previous_proceedings_data = get_proceedings(filtered_df)
+        previous_proceedings_data = get_student_status(filtered_df)
 
         if previous_proceedings_data == proceedings_data:
             needs_update = False
@@ -70,9 +65,6 @@ def process_proceedings(
 
     # Put it all tidy in a nice dict for reporting
     proceedings_info = {
-        "student_name": student_name,
-        "group_name": group_name,
-        "review_date": review_date,
         "N_CEGs": proceedings_data[0],
         "N_CCCs": proceedings_data[1],
         "N_CCC_proceedings": proceedings_data[2],
@@ -88,3 +80,54 @@ def process_proceedings(
         proceedings_info["N_previous_total_proceedings"] = previous_proceedings_data[0] + previous_proceedings_data[2]
 
     return proceedings_info
+
+
+
+
+def process_all_students(
+    input_data 
+):
+
+    # Unpack the required data
+    meeting_date = input_data["meeting_date"]
+    comparison_date = input_data["comparison_date"]
+    dfs = input_data["group_dfs"]
+
+    # Prepare list that will hold all the tardies
+    reports = []
+
+    # Iterate over the groups
+    for group_name, group_df in dfs.items():
+
+        print("-"*60)
+        print(f"Analizando {group_name}")
+
+        student_names = group_df["Estudiante"].unique()
+
+        for student_name in student_names:
+
+            # Filter by the student name
+            mask = (group_df["Estudiante"] == student_name)
+            student_df = group_df.loc[mask]
+
+            # Do the processing
+            proceedings_info = process_student(
+                student_df,
+                meeting_date,
+                comparison_date
+            )
+
+            # Put it all nice and tidy for reporting
+
+            # Is there anything to report in the first place?
+            if proceedings_info["N_CCCs"] > 0 or proceedings_info["N_CEGs"] > 0:
+                proceedings_report = {
+                    "student_name": student_name,
+                    "group_name": group_name,
+                    "meeting_date": meeting_date
+                }
+                # Add the colors info
+                proceedings_report = proceedings_report | proceedings_info
+                reports.append(proceedings_report)
+
+    return reports

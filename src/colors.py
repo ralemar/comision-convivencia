@@ -1,4 +1,3 @@
-from datetime import timedelta
 from . import settings as S
 
 def get_number_of_CFC_upgrades(student_df, start_date, final_date):
@@ -134,15 +133,11 @@ def evolve(
 
 
 
-def process_colors(
+def process_student(
     student_df,
     all_dates,
     checkpoint
 ):
-
-    # Unpack data
-    student_name = student_df[S.COLUMN_NAME_STUDENT].iloc[0]
-    group_name = student_df[S.COLUMN_NAME_GROUP].iloc[0]
 
     # Initialize the state at 0 (green color)
     new_state = 0
@@ -174,9 +169,6 @@ def process_colors(
     
     # Put it all tidy in a nice dict for reporting
     colors_info = {
-        "student_name": student_name,
-        "group_name": group_name,
-        "notification_date": all_dates[checkpoint] + timedelta(days=1),
         "old_state": old_state,
         "new_state": new_state,
         "n_CFC_upgrades": n_CFC_upgrades,
@@ -187,3 +179,54 @@ def process_colors(
     }
 
     return colors_info
+
+
+def process_all_students(
+    input_data 
+):
+
+    # Unpack the required data
+    checkpoint = input_data["checkpoint"]
+    all_dates = input_data["all_dates"]
+    meeting_date = input_data["meeting_date"]
+    dfs = input_data["group_dfs"]
+
+    # Prepare list that will hold all the tardies
+    reports = []
+
+
+    # Iterate over the groups
+    for group_name, group_df in dfs.items():
+
+        print("-"*60)
+        print(f"Analizando {group_name}")
+
+        student_names = group_df["Estudiante"].unique()
+        group_report = []
+
+        for student_name in student_names:
+
+            # Filter by the student name
+            mask = (group_df["Estudiante"] == student_name)
+            student_df = group_df.loc[mask]
+
+            # Do the processing
+            colors_info = process_student(
+                student_df,
+                all_dates,
+                checkpoint
+            )
+
+            # Put it all nice and tidy for reporting
+            student_report = {
+                "student_name": student_name,
+                "group_name": group_name,
+                "meeting_date": meeting_date
+            }
+
+            # Add the colors info
+            student_report = student_report | colors_info
+            group_report.append(student_report)
+        reports.append(group_report)
+
+    return reports
