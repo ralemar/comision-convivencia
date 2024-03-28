@@ -36,7 +36,8 @@ def make_dirs(
     meeting_date,
     tardies=False,
     colors=False,
-    proceedings=False
+    proceedings=False,
+    tmp=False
 ):
 
     # Get all the paths
@@ -54,7 +55,8 @@ def make_dirs(
         colors_reports_dir_path.mkdir(parents=True, exist_ok=True)
     if proceedings:
         proceedings_reports_dir_path.mkdir(parents=True, exist_ok=True)
-
+    if tmp:
+        TMP_PATH.mkdir(parents=True, exist_ok=True)
 
 
 
@@ -104,14 +106,13 @@ def write_one_tardy_report(
 
 def export_tardies(all_tardies):
 
-    copy_temporal_files()
-
     if len(all_tardies) == 0:
         print("No hay retrasos!")
     else:
         # Pick the meeting date from the first entry
         meeting_date = all_tardies[0]["meeting_date"]
-        make_dirs(meeting_date, tardies=True)
+        make_dirs(meeting_date, tardies=True, tmp=True)
+        copy_temporal_files()
 
     for tardy_report in all_tardies:
 
