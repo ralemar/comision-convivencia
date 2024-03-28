@@ -1,5 +1,6 @@
 from . import settings as S
-from datetime import datetime
+import numpy as np
+import dateutil.parser as parser
 
 def preprocess_tab(df, group_name):
 
@@ -10,25 +11,25 @@ def preprocess_tab(df, group_name):
     df = df.iloc[n:]
     df.reset_index(drop=True, inplace=True)
 
-    # Get rid of other empty rows
-    df = df.dropna()
-
     # Rename the dataframe with more convenient names
     mapper = dict(zip(S.SHEET_VALID_COLUMNS, S.SHEET_VALID_COLUMNS_RENAMED))
     df = df.rename(columns=mapper)
+
+    # Get rid of other empty rows
+    # But first convert to NaN (Excel does this, google sheets does not)
+    df['Fecha Evento'] = df['Fecha Evento'].replace('', np.nan)
+    df = df.dropna()
 
     # Reorder the columns so that they are in the specified order
     df = df[S.SHEET_VALID_COLUMNS_RENAMED]
 
     # Convert datetime objects to date (without the time)
-    fmt = "%d/%m/%Y"
     df[S.COLUMN_NAME_DATE_OF_EVENT] = [
-        datetime.strptime(ds, fmt).date() for ds in df[S.COLUMN_NAME_DATE_OF_EVENT]
+        parser.parse(ds, dayfirst=True).date() for ds in df[S.COLUMN_NAME_DATE_OF_EVENT]
     ]
 
-    fmt = "%d/%m/%Y  %H:%M:%S"
     df[S.COLUMN_NAME_DATE_OF_RECORD] = [
-        datetime.strptime(ds, fmt).date() for ds in df[S.COLUMN_NAME_DATE_OF_RECORD]
+        parser.parse(ds, dayfirst=True).date() for ds in df[S.COLUMN_NAME_DATE_OF_RECORD]
     ]
 
     # Add a column with the group name
