@@ -1,6 +1,5 @@
 from pathlib import Path
 import pandas as pd
-import xlsxwriter
 
 
 #### CONSTANTS 
@@ -349,8 +348,18 @@ def export_colors_in_excel(all_colors):
                 "Explicación": explanations
             }
             records.append(record)
+
+        # Put everything into a DataFrame
         df = pd.DataFrame(data=records)
-        df.to_excel(output_path)
+
+        # And export to a file with proper width column
+        writer = pd.ExcelWriter(output_path, engine="xlsxwriter")
+        df.to_excel(writer, sheet_name=group_name)
+        workbook = writer.book
+        worksheet = writer.sheets[group_name]
+        worksheet.autofit()
+        writer.close()
+
 
 
 def export_colors(all_colors, mode="EXCEL"):
