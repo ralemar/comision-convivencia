@@ -11,11 +11,19 @@ TMP_PATH = Path("tmp")
 SRC_PATH = Path("src")
 NOTIFICATION_PATH = SRC_PATH / "notificacion"
 
-STATE_TO_COLOR = {
+STATE_TO_COLOR_NAME = {
     -2: "ROJO",
     -1: "AMARILLO",
     0: "VERDE",
     1: "AZUL"
+}
+
+# colors for xlsxwriter
+COLOR_NAME_TO_COLOR_CODE = {
+    "ROJO": "#FF0000",
+    "AMARILLO": "#FFFF00",
+    "VERDE": "#92d050",
+    "AZUL": "#00b0f0"
 }
 
 
@@ -181,8 +189,8 @@ def get_student_color_report(
     has_no_incidents_or_CCCs=None
 ):
 
-    old_color = STATE_TO_COLOR[old_state]
-    new_color = STATE_TO_COLOR[new_state]
+    old_color = STATE_TO_COLOR_NAME[old_state]
+    new_color = STATE_TO_COLOR_NAME[new_state]
 
     if old_state == new_state:
         summary = f"{student_name} se mantiene en el {old_color}."
@@ -228,8 +236,8 @@ def get_colors_and_explanation(
     **kwargs
 ):
 
-    old_color = STATE_TO_COLOR[old_state]
-    new_color = STATE_TO_COLOR[new_state]
+    old_color = STATE_TO_COLOR_NAME[old_state]
+    new_color = STATE_TO_COLOR_NAME[new_state]
 
     if has_CEG:
         explanations = ["Pasa directamente al rojo por expediente directo."]
@@ -357,7 +365,15 @@ def export_colors_in_excel(all_colors):
         df.to_excel(writer, sheet_name=group_name)
         workbook = writer.book
         worksheet = writer.sheets[group_name]
-        worksheet.autofit()
+        worksheet.autofit() # Change column width
+
+        # Change background color
+        for i, row in df.iterrows():
+            student_name = row["Estudiante"]
+            color_name = row["Nuevo color"]
+            color_code = COLOR_NAME_TO_COLOR_CODE[color_name]
+            color_format = workbook.add_format({'bg_color': color_code})
+            worksheet.write(i+1, 1, student_name, color_format)
         writer.close()
 
 
