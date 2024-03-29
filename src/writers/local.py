@@ -1,5 +1,6 @@
 from pathlib import Path
 import pandas as pd
+import xlsxwriter
 
 
 #### CONSTANTS 
@@ -96,11 +97,51 @@ def write_one_tardy_report(
             f.write(f"{line}\n")
 
     # Get path for pdf file
-    output_path = OUTPUTS_PATH / date_string / "retrasos" / filename
+    output_path = OUTPUTS_PATH / date_string / TARDIES_SUBDIR / filename
     output_path = output_path.with_suffix(".pdf")
 
     # Generate file with typst
     typst.compile(input_path, output=output_path)
+
+
+def export_tardies_summary_in_xlsx(all_tardies):
+
+    # Create dataframe
+    df = pd.DataFrame(data=all_tardies)
+
+    # Filter columns
+    df = df[["group_name", "student_name", "meeting_date"]]
+
+    # Rename columns
+    mapper = {
+        "group_name": "Grupo",
+        "student_name": "Estudiante",
+        "meeting_date": "Fecha revisión"
+    }
+    df = df.rename(columns=mapper)
+
+    # Get filepath
+    meeting_date = all_tardies[0]["meeting_date"]
+    date_string = meeting_date.strftime("%y%m%d")
+    output_path = OUTPUTS_PATH / date_string / TARDIES_SUBDIR / "resumen.xlsx"
+
+    # Export to file
+    # Create a Pandas Excel writer using XlsxWriter as the engine.
+    writer = pd.ExcelWriter(output_path, engine="xlsxwriter")
+
+    # Convert the dataframe to an XlsxWriter Excel object.
+    df.to_excel(writer, sheet_name="Resumen de retrasos")
+
+    # Get the xlsxwriter workbook and worksheet objects.
+    workbook = writer.book
+    worksheet = writer.sheets["Resumen de retrasos"]
+
+    # Change column width
+    worksheet.autofit()
+
+    # Close the Pandas Excel writer and output the Excel file.
+    writer.close()
+
 
 
 
@@ -108,15 +149,21 @@ def export_tardies(all_tardies):
 
     if len(all_tardies) == 0:
         print("No hay retrasos!")
+        return None
     else:
         # Pick the meeting date from the first entry
         meeting_date = all_tardies[0]["meeting_date"]
         make_dirs(meeting_date, tardies=True, tmp=True)
         copy_temporal_files()
 
-    for tardy_report in all_tardies:
+        # Create summary
+        export_tardies_summary_in_xlsx(all_tardies)
 
-        write_one_tardy_report(**tardy_report)
+        # Create PDF files, one by one
+        for tardy_report in all_tardies:
+            write_one_tardy_report(**tardy_report)
+
+
 
 
 
