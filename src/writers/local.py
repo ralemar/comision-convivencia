@@ -398,30 +398,36 @@ def export_proceedings(all_proceedings):
     # Prepare everything
     if len(all_proceedings) == 0:
         print("No hay CCCs ni CGPCs!")
+        return None
     else:
         # Pick the meeting date from the first entry
         meeting_date = all_proceedings[0]["meeting_date"]
         make_dirs(meeting_date, proceedings=True)
 
 
-    # Get path of report
-    date_string = meeting_date.strftime("%y%m%d")
-    output_path = OUTPUTS_PATH / date_string / PROCEEDINGS_SUBDIR / "expedientes"
-    output_path = output_path.with_suffix(".xlsx")
+        # Get path of report
+        date_string = meeting_date.strftime("%y%m%d")
+        output_path = OUTPUTS_PATH / date_string / PROCEEDINGS_SUBDIR / "expedientes"
+        output_path = output_path.with_suffix(".xlsx")
 
-    # Add contents to report
-    df = pd.DataFrame(all_proceedings)
+        # Add contents to report
+        df = pd.DataFrame(all_proceedings)
 
-    # Drop some columns
-    df.drop(
-        columns=[
-            "meeting_date", 
-            "N_previous_CEGs",
-            "N_previous_CCCs",
-            "N_previous_CCC_proceedings",
-            "N_previous_total_proceedings"
-        ],
-        inplace=True
-    )
+        # Drop some columns
+        df.drop(
+            columns=[
+                "meeting_date",
+                "N_previous_CEGs",
+                "N_previous_CCCs",
+                "N_previous_CCC_proceedings",
+                "N_previous_total_proceedings"
+            ],
+            inplace=True
+        )
 
-    df.to_excel(output_path)  
+        # And export to a file with proper width column
+        writer = pd.ExcelWriter(output_path, engine="xlsxwriter")
+        df.to_excel(writer, sheet_name=group_name)
+        workbook = writer.book
+        worksheet = writer.sheets[group_name]
+        worksheet.autofit() # Change column width
