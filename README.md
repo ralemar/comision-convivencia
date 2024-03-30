@@ -1,5 +1,6 @@
 # README
 
+Automatización de tareas para la comisión de convivencia en el IESO Castejón de Navarra.
 ## Objetivo
 La comisión de convivencia se encarga de gestionar varias tareas. Este proyecto tiene como objetivo automatizar las siguientes:
 1. La gestión de los **retrasos de 1ª hora**.
@@ -29,3 +30,30 @@ El análisis de datos del nivel 3 tiene que obtener una serie de resúmenes a pa
 ### Reglas de expedientes
 - Cada CGPC supone un expediente automáticamente.
 - Al acumular 6 CCCs, y luego cada 3 CCCs, se abre un expediente.
+
+## Ejemplo de uso
+Si tenemos el código en `src` como subdirectorio, podemos ejecutar todos los informes haciendo:
+
+```python
+# Cargar todos los paquetes
+import src.readers.local as reader
+import src.preprocess as pp
+import src.tardies as tardies
+import src.colors as colors
+import src.proceedings as proceedings
+import src.writers.local as writer
+
+input_data = reader.read_data() # Nivel 1
+pp.preprocess_data(input_data)  # Nivel 2
+
+# Nivel 3: Análisis
+all_tardies = tardies.process_all_students(input_data) # Retrasos
+all_colors = colors.process_all_students(input_data) # Colores
+all_proceedings = proceedings.process_all_students(input_data) # Expedientes
+
+# Nivel 4: Creación de informes
+writer.export_tardies(all_tardies)
+writer.export_colors(all_colors)
+writer.export_proceedings(all_proceedings)
+```
+
