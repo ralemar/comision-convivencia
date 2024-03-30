@@ -57,3 +57,4 @@ writer.export_colors(all_colors)
 writer.export_proceedings(all_proceedings)
 ```
 
+Los datos se pueden leer (Nivel 1 de la herramienta) de un fichero local o desde la nube para ejecutar en Google Colab. Para ello, debemos importar o bien `src.readers.local` o bien `src.readers.colab`.
