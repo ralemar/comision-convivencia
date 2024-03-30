@@ -427,7 +427,8 @@ def export_proceedings(all_proceedings):
 
         # And export to a file with proper width column
         writer = pd.ExcelWriter(output_path, engine="xlsxwriter")
-        df.to_excel(writer, sheet_name=group_name)
+        df.to_excel(writer, sheet_name="Expedientes")
         workbook = writer.book
-        worksheet = writer.sheets[group_name]
+        worksheet = writer.sheets["Expedientes"]
         worksheet.autofit() # Change column width
+        writer.close()
