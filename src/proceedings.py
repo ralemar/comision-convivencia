@@ -122,8 +122,8 @@ def process_all_students(
             # Is there anything to report in the first place?
             if proceedings_info["N_CCCs"] > 0 or proceedings_info["N_CEGs"] > 0:
                 proceedings_report = {
-                    "student_name": student_name,
                     "group_name": group_name,
+                    "student_name": student_name,
                     "meeting_date": meeting_date
                 }
                 # Add the colors info

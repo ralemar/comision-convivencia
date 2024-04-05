@@ -425,10 +425,40 @@ def export_proceedings(all_proceedings):
             inplace=True
         )
 
+
+        # Rename columns
+        mapper = {
+            "student_name": "Estudiante",
+            "group_name": "Grupo",
+            "N_CEGs": "CGPCs",
+            "N_CCCs": "CCCs ordinarios",
+            "N_CCC_proceedings": "Expedientes por CCCs",
+            "N_total_proceedings": "Expedientes totales",
+            "issue_warning": "Avisar por precaución",
+            "needs_update": "Hay que actualizar"
+        }
+        df = df.rename(columns=mapper)
+
+
         # And export to a file with proper width column
         writer = pd.ExcelWriter(output_path, engine="xlsxwriter")
         df.to_excel(writer, sheet_name="Expedientes")
         workbook = writer.book
         worksheet = writer.sheets["Expedientes"]
         worksheet.autofit() # Change column width
+        worksheet.autofilter(0,1,0,8) # Add filter
+
+        # Rewrite the header with the right format
+        worksheet.set_column(3,8,12, None)
+        # Add wrap for headers
+        header_row_format = workbook.add_format(
+            {
+                "text_wrap": True,
+                "align": "center",
+                "valign": "center",
+                "bold": True
+            }
+        )
+        for column_number, value in enumerate(df.columns.values):
+            worksheet.write(0, column_number+1, value, header_row_format)
         writer.close()
