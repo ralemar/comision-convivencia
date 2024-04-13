@@ -1,5 +1,6 @@
 from pathlib import Path
 import pandas as pd
+import shutil
 
 
 #### CONSTANTS 
@@ -10,6 +11,7 @@ PROCEEDINGS_SUBDIR = Path("expedientes")
 TMP_PATH = Path("tmp")
 SRC_PATH = Path("src")
 NOTIFICATION_PATH = SRC_PATH / "notificacion"
+
 
 STATE_TO_COLOR_NAME = {
     -2: "ROJO",
@@ -462,3 +464,10 @@ def export_proceedings(all_proceedings):
         for column_number, value in enumerate(df.columns.values):
             worksheet.write(0, column_number+1, value, header_row_format)
         writer.close()
+
+
+
+def create_zip_file():
+
+    filename = TMP_PATH / "informes"
+    shutil.make_archive(filename, 'zip', OUTPUTS_PATH)
