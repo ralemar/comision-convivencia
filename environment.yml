@@ -1,12 +1,9 @@
-name: teacher
 channels:
   - conda-forge
 dependencies:
   - pathlib
   - numpy
   - typst
-  - typst-py=0.10.0
+  - typst-py
   - xlsxwriter
-  - pip
-  - pip:
-    - streamlit
+  - streamlit
