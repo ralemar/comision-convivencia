@@ -2,4 +2,5 @@ streamlit
 numpy
 typst
 xlsxwriter
+openpyxl
 pathlib
