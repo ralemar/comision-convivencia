@@ -1,9 +1,12 @@
 channels:
   - conda-forge
 dependencies:
-  - pathlib
-  - numpy
   - typst
-  - typst-py
-  - xlsxwriter
-  - streamlit
+  - pip
+  - pip:
+    - streamlit
+    - numpy
+    - typst-py
+    - xlsxwriter
+    - streamlit
+    - pathlib
