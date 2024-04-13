@@ -6,7 +6,7 @@ dependencies:
   - pip:
     - streamlit
     - numpy
-    - typst-py
+    - typst
     - xlsxwriter
     - streamlit
     - pathlib
