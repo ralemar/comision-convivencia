@@ -14,10 +14,10 @@ MEETING_DATE_PATH = INPUTS_PATH / "fecha_reunion.txt"
 
 
 
-def read_excel():
+def read_excel(path_or_buffer):
 
     # Load the whole file into memory
-    xlsx_file = pd.ExcelFile(XLSX_FILEPATH)
+    xlsx_file = pd.ExcelFile(path_or_buffer)
 
     # Therefore the valid tabs are as follows
     valid_tabs = []
@@ -99,7 +99,7 @@ def read_checkpoint():
 def read_data():
 
     # Load all the data
-    raw_dataframes = read_excel()
+    raw_dataframes = read_excel(XLSX_FILEPATH)
     all_dates = read_all_dates()
     checkpoint = read_checkpoint()
     comparison_date = read_comparison_date()
