@@ -2,6 +2,7 @@ name: teacher
 channels:
   - conda-forge
 dependencies:
+  - protobuf=4.25.3
   - pathlib
   - pandas
   - numpy
