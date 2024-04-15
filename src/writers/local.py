@@ -327,6 +327,13 @@ def export_colors_in_excel(all_colors):
     meeting_date = all_colors[0][0]["meeting_date"]
     make_dirs(meeting_date, colors=True)
 
+    # Get path of report
+    date_string = meeting_date.strftime("%y%m%d")
+    output_path = OUTPUTS_PATH / date_string / "colores.xlsx"
+
+    # Prepare output
+    writer = pd.ExcelWriter(output_path, engine="xlsxwriter")
+
     for group_reports in all_colors:
 
         # Get path of report
@@ -363,7 +370,6 @@ def export_colors_in_excel(all_colors):
         df = pd.DataFrame(data=records)
 
         # And export to a file with proper width column
-        writer = pd.ExcelWriter(output_path, engine="xlsxwriter")
         df.to_excel(writer, sheet_name=group_name)
         workbook = writer.book
         worksheet = writer.sheets[group_name]
@@ -376,7 +382,8 @@ def export_colors_in_excel(all_colors):
             color_code = COLOR_NAME_TO_COLOR_CODE[color_name]
             color_format = workbook.add_format({'bg_color': color_code})
             worksheet.write(i+1, 1, student_name, color_format)
-        writer.close()
+    
+    writer.close()
 
 
 
