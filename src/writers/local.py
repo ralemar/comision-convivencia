@@ -27,6 +27,12 @@ COLOR_NAME_TO_COLOR_CODE = {
 }
 
 
+# REMOVE OUTPUT DIR WHEN IMPORTED
+import shutil
+shutil.rmtree(OUTPUTS_PATH)
+shutil.rmtree(TMP_PATH)
+
+
 
 def copy_temporal_files():
 
