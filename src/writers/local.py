@@ -29,8 +29,10 @@ COLOR_NAME_TO_COLOR_CODE = {
 
 # REMOVE OUTPUT DIR WHEN IMPORTED
 import shutil
-shutil.rmtree(OUTPUTS_PATH)
-shutil.rmtree(TMP_PATH)
+if OUTPUTS_PATH.is_dir():
+    shutil.rmtree(OUTPUTS_PATH)
+if TMP_PATH.is_dir():
+    shutil.rmtree(TMP_PATH)
 
 
 
@@ -369,6 +371,38 @@ def export_proceedings(all_proceedings):
         # Add contents to report
         df = pd.DataFrame(all_proceedings)
 
+        # Add new columns
+        changes = []
+        new_proceedings = []
+        for index, row in df.iterrows():
+            explanations = []
+            new_proceeding = False
+            # Check if the student is new
+            if (row["N_previous_CEGs"] == 0) and (row["N_previous_CCCs"] == 0):
+                explanations.append("* Primera entrada. Hay que abrir fila nueva.")
+            # Check if the student is on the verge of a new proceeding
+            if row["issue_warning"]:
+                explanations.append("* Hay que avisarle de que está a 1 CCC de tener expediente.")
+            # Check number of new CCCs
+            if row["N_previous_CCCs"] != row["N_CCCs"]:
+                n = row["N_CCCs"]
+                m = n- row["N_previous_CCCs"]
+                explanations.append(f"* Ahora tiene {n} CCC ordinarias, {m} más que en la última revisión")
+            # Check if new proceeding for CCCs
+            if row["N_previous_CCC_proceedings"] != row["N_CCC_proceedings"]:
+                n = row["N_CCC_proceedings"]
+                m = n- row["N_previous_CCC_proceedings"]
+                explanations.append(f"* Hay que abrirle {m} expedientes por acumulación de CCCs")
+                new_proceeding = True
+            # Check number of new CGPCs
+            if row["N_previous_CEGs"] != row["N_CEGs"]:
+                n = row["N_CEGs"]
+                m = n- row["N_previous_CEGs"]
+                explanations.append(f"* Ahora tiene {n} CGPCs, {m} más que en la última revisión, que conlleva apertura de expediente")
+                new_proceeding = True
+            explanation = "\n".join(explanations)
+            changes.append(explanation)
+            new_proceedings.append(new_proceeding)
         # Drop some columns
         df.drop(
             columns=[
@@ -391,10 +425,22 @@ def export_proceedings(all_proceedings):
             "N_CCC_proceedings": "Expedientes por CCCs",
             "N_total_proceedings": "Expedientes totales",
             "issue_warning": "Avisar por precaución",
-            "needs_update": "Hay que actualizar"
+            "needs_update": "Contiene cambios"
         }
         df = df.rename(columns=mapper)
 
+        df["Nuevo expediente"] = new_proceedings
+        df["Comentarios"] = changes
+
+
+        # Change boolean columns to yes/no
+        boolean_columns = [
+            "Avisar por precaución",
+            "Contiene cambios",
+            "Nuevo expediente"
+        ]
+        for column in boolean_columns:
+            df[column] = df[column].map({True: "SI" , False: "NO"}) 
 
         # And export to a file with proper width column
         writer = pd.ExcelWriter(output_path, engine="xlsxwriter")
@@ -402,10 +448,10 @@ def export_proceedings(all_proceedings):
         workbook = writer.book
         worksheet = writer.sheets["Expedientes"]
         worksheet.autofit() # Change column width
-        worksheet.autofilter(0,1,0,8) # Add filter
+        worksheet.autofilter(0,1,0,9) # Add filter
 
         # Rewrite the header with the right format
-        worksheet.set_column(3,8,12, None)
+        worksheet.set_column(3,9,12, None)
         # Add wrap for headers
         header_row_format = workbook.add_format(
             {
@@ -417,6 +463,15 @@ def export_proceedings(all_proceedings):
         )
         for column_number, value in enumerate(df.columns.values):
             worksheet.write(0, column_number+1, value, header_row_format)
+        # Add wrap for explanation:
+        comment_format = workbook.add_format(
+            {
+                "text_wrap": True,
+                "valign": "top"
+            }
+        )
+        for i, exp in enumerate(df["Comentarios"]):
+            worksheet.write(i+1, 10, exp, comment_format)
         writer.close()
 
 
