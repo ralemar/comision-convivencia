@@ -6,7 +6,7 @@ import src.preprocess as pp
 import src.tardies as tardies
 import src.colors as colors
 import src.proceedings as proceedings
-import src.writers.local as writer
+
 
 
 
@@ -110,6 +110,7 @@ if st.button('Comenzar análisis', type="primary"):
 
     # Nivel 4
     st.write("Creando informes")
+    import src.writers.local as writer
     if analyze_tardies:
         writer.export_tardies(all_tardies)
     if analyze_colors:
