@@ -6,7 +6,6 @@ import shutil
 #### CONSTANTS 
 OUTPUTS_PATH = Path("outputs")
 TARDIES_SUBDIR = Path("retrasos")
-PROCEEDINGS_SUBDIR = Path("expedientes")
 TMP_PATH = Path("tmp")
 SRC_PATH = Path("src")
 NOTIFICATION_PATH = SRC_PATH / "notificacion"
@@ -53,14 +52,11 @@ def make_dirs(
     date_string = meeting_date.strftime("%y%m%d")
     meeting_dir_path = OUTPUTS_PATH / date_string
     tardy_reports_dir_path = meeting_dir_path / TARDIES_SUBDIR
-    proceedings_reports_dir_path = meeting_dir_path / PROCEEDINGS_SUBDIR
 
     # Careful, this line could trigger an error if an old file is open.
     meeting_dir_path.mkdir(parents=True, exist_ok=True)
     if tardies:
         tardy_reports_dir_path.mkdir(parents=True, exist_ok=True)
-    if proceedings:
-        proceedings_reports_dir_path.mkdir(parents=True, exist_ok=True)
     if tmp:
         TMP_PATH.mkdir(parents=True, exist_ok=True)
 
@@ -345,9 +341,6 @@ def export_colors(all_colors):
 
 
 
-
-
-
 ##### PROCEEDINGS
 
 def export_proceedings(all_proceedings):
@@ -364,7 +357,7 @@ def export_proceedings(all_proceedings):
 
         # Get path of report
         date_string = meeting_date.strftime("%y%m%d")
-        output_path = OUTPUTS_PATH / date_string / PROCEEDINGS_SUBDIR / "expedientes"
+        output_path = OUTPUTS_PATH / date_string / "expedientes"
         output_path = output_path.with_suffix(".xlsx")
 
         # Add contents to report
