@@ -5,7 +5,6 @@ import shutil
 
 #### CONSTANTS 
 OUTPUTS_PATH = Path("outputs")
-COLORS_SUBDIR = Path("colores")
 TARDIES_SUBDIR = Path("retrasos")
 PROCEEDINGS_SUBDIR = Path("expedientes")
 TMP_PATH = Path("tmp")
@@ -54,15 +53,12 @@ def make_dirs(
     date_string = meeting_date.strftime("%y%m%d")
     meeting_dir_path = OUTPUTS_PATH / date_string
     tardy_reports_dir_path = meeting_dir_path / TARDIES_SUBDIR
-    colors_reports_dir_path = meeting_dir_path / COLORS_SUBDIR
     proceedings_reports_dir_path = meeting_dir_path / PROCEEDINGS_SUBDIR
 
     # Careful, this line could trigger an error if an old file is open.
     meeting_dir_path.mkdir(parents=True, exist_ok=True)
     if tardies:
         tardy_reports_dir_path.mkdir(parents=True, exist_ok=True)
-    if colors:
-        colors_reports_dir_path.mkdir(parents=True, exist_ok=True)
     if proceedings:
         proceedings_reports_dir_path.mkdir(parents=True, exist_ok=True)
     if tmp:
@@ -286,42 +282,7 @@ def prepare_color_explanation_for_txt(
 
 
 
-def export_colors_in_txt(all_colors):
-
-    # Prepare everything
-    meeting_date = all_colors[0][0]["meeting_date"]
-    make_dirs(meeting_date, colors=True)
-
-    for group_reports in all_colors:
-
-        # Get path of report
-        date_string = meeting_date.strftime("%y%m%d")
-        group_name = group_reports[0]["group_name"]
-        output_path = OUTPUTS_PATH / date_string / COLORS_SUBDIR / group_name
-        output_path = output_path.with_suffix(".txt")
-
-        # Add contents to report
-        with open(output_path, 'w', encoding="utf8") as f:
-
-            # Iterate over students in the group:
-            for student_report in group_reports:
-
-                old_color, new_color, explanations = get_colors_and_explanation(
-                    **student_report    
-                )
-                new_lines = prepare_color_explanation_for_txt(
-                    student_report["student_name"],
-                    old_color,
-                    new_color,
-                    explanations
-                )
-                #new_lines = get_student_color_report(**student_report)
-                f.write(new_lines)
-
-
-
-
-def export_colors_in_excel(all_colors):
+def export_colors(all_colors):
 
     # Prepare everything
     meeting_date = all_colors[0][0]["meeting_date"]
@@ -337,10 +298,7 @@ def export_colors_in_excel(all_colors):
     for group_reports in all_colors:
 
         # Get path of report
-        date_string = meeting_date.strftime("%y%m%d")
         group_name = group_reports[0]["group_name"]
-        output_path = OUTPUTS_PATH / date_string / COLORS_SUBDIR / group_name
-        output_path = output_path.with_suffix(".xlsx")
 
         # Add contents to report
         records = []
@@ -385,16 +343,6 @@ def export_colors_in_excel(all_colors):
     
     writer.close()
 
-
-
-def export_colors(all_colors, mode="EXCEL"):
-
-    if mode == "EXCEL":
-        export_colors_in_excel(all_colors)
-    elif mode == "txt":
-        export_colors_in_txt(all_colors)
-    else:
-        print("MODO NO DETECTADO")
 
 
 
