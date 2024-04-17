@@ -57,10 +57,17 @@ intervals = [
 ]
 interval_strings = [f"Desde el {x[0]} hasta el {x[1]}" for x in intervals]
 
+# Find best interval
+today = date.today()
+for i, x in enumerate(all_date_strings[1:]):
+    d = date.fromisoformat(x)
+    if today < d:
+        break 
+
 option = st.selectbox(
     "Intervalo de estudio",
     interval_strings,
-    index=None,
+    index=i-1,
     placeholder="Elige un intervalo de fechas...",
 )
 
