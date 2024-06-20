@@ -64,6 +64,10 @@ for i, x in enumerate(all_date_strings[1:]):
     if today < d:
         break 
 
+# If the first interval is not over yet, take it anyway
+if i == 0:
+    i = 1
+
 option = st.selectbox(
     "Intervalo de estudio",
     interval_strings,

@@ -33,6 +33,22 @@
 - DONE: cambiar proceeding dates para que sea meeting date por defecto, la de comparara leerla aparte.
 - CANCELED: Hacer script que calcule retrasos, colores, expedientes por separado. (Esto ya está tan encapsulado que básicamente está hecho) Meter fecha como parámetro? Que se calcule automáticamente si no se da... (Esto no tiene sentido)
 - DONE: añadir modo excel para output local
+- DONE: push a github para poder clonar
+- DONE: Preparar secuencia de comandos para Colab.
+- DONE: Experimentar con zapier y los triggers... (FRACASO, funciona de forma errática)
+- DONE: En COLAB, la salida de retrasos meterla al excel de origen en una pestaña nueva que dispare a zapier... (Hecho pero zapier no es robusto)
+- DONE: repensar jerarquía de directorios para writers, es decir, repensar que writers quiero y como llamarlos (modo consola, ficheros, excel, colab...)
+- DONE: export en excel para retrasos en la última pestaña del excel (o colab). Es decir, añadir output de retrasos para logear las sanciones.
+- DONE: Cuando se exporta un excel, hacer que las columnas tengan ya la anchura adecuada
+- DONE: Exportar colores con excel formateado
+- DONE: Asegurarse de que si no hay ningún report, el programa no da error (imagina que no puede leer meeting date y no puede crear la carpeta -> elige no crearla desde el principio)
+- CANCELED: Meter salida rich text (ya no tiene sentido, voy a minimizar la salida en modo consola o al voy a suprimir si hago una webapp). En su lugar, tomarán precedencia los logs.
+- DONE: En el output de proceedings, cambiar nombre de columnas, añadir datos viejos, y calcular nuevos expedientes
+- DONE: Deploy to https://comision-convivencia-castejon.streamlit.app/
+- DONE: Cambiar ventanas para que el corte sea en viernes.
+- DONE: La salida de colores en un único excel con varias pestañas.
+- CANCELED: Barras de progreso streamlit
+- DONE: La salida de expedientes que sí incluya datos antiguos y que indique si hay nuevo expediente.
 
 
 
@@ -41,25 +57,30 @@
 
 
 
-- push a github para poder clonar
-- Preparar secuencia de comandos para Colab.
-- Experimentar con zapier y los triggers...
+
+
+
+- Revisar por qué me salen fechas anteriores en el output (streamlit).
+- Meter botón para fecha de reunión?
 
 
 - Idea: introducir un log donde se muestren algunos resumenes para verificar que no se ha liado, rollo... detectados estos grupos, con tantos eventos por grupo.
 - Configurar verbosidad
-- Meter salida rich text
 
-- En COLAB, la salida de retrasos meterla al excel de origen en una pestaña nueva que dispare a zapier...
-
-- Corregir errata en las CCC muy graves, en fuente y en código.
 - Ordenar alfabéticamente NO desde el principio, solamente en el informe final de lo que sea.
+- Ordenar, eso sí, en los expedientes.
 - Leer todas las fechas y otras historias de un único archivo de configuracion
-- export en excel para retrasos en la última pestaña del excel (o colab). Es decir, añadir output de retrasos para logear las sanciones.
-- repensar jerarquía de directorios para writers, es decir, repensar que writers quiero y como llamarlos (modo consola, ficheros, excel, colab...)
-- En el output de proceedings, cambiar nombre de columnas, añadir datos viejos, y calcular nuevos expedientes
-- Exportar colores con excel formateado
 
 
-- RENAME: nombre funciones CEG: 
-- Rename checkpoint a window o interval
+- Rename: nombre funciones CEG: 
+- Rename: checkpoint a window o interval
+- Rename: Corregir errata en las CCC muy graves, en fuente y en código.
+
+
+
+- Imprimir progreso usando algo así https://stackoverflow.com/questions/3002085/how-to-print-out-status-bar-and-percentage
+- Añadir logs:
+    * Deberían mostrar algunos resumenes para verificar que no se ha liado, rollo... detectados estos grupos, con tantos eventos por grupo.
+
+- Descargar y cachear typst
+- A principio de curso, qué pasa si no hay ninguna entrada...?
