@@ -3,7 +3,8 @@ SHEET_USELESS_TABS = [
         "Instrucciones",
         "CCCEXP",
         "CCC/EXP",
-        "Retrasos 1ªh"
+        "Retrasos 1ªh",
+        "REGISTROS ANTERIORES"
 ]
 
 ##### ORIGINAL COLUMN NAMES
