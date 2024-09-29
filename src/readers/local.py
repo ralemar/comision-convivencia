@@ -114,3 +114,15 @@ def read_data():
     }
 
     return raw_data
+
+
+def read_dates_from_public_spreadsheet():
+
+    import streamlit as st
+    from streamlit_gsheets import GSheetsConnection
+
+    # Create a connection object.
+    conn = st.connection("gsheets", type=GSheetsConnection)
+    df = conn.read()
+    all_date_strings = df["Fecha_final"].tolist()
+    return all_date_strings

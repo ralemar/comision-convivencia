@@ -1,6 +1,7 @@
 from . import settings as S
 import numpy as np
 import dateutil.parser as parser
+from datetime import date
 
 def preprocess_tab(df, group_name):
 
@@ -50,3 +51,28 @@ def preprocess_data(data_dict):
         gn: preprocess_tab(tab, gn) for (gn, tab) in dfs.items()
     }
     data_dict["group_dfs"] = new_dfs
+
+
+def process_all_date_strings(all_date_strings):
+
+    # Convert from strings to date object
+    processed_dates = [date.fromisoformat(x) for x in all_date_strings]
+    
+    # Get intervals with elements k,k+1 of list and the text that will be displayed
+    intervals = [
+        [all_date_strings[i], all_date_strings[i+1]] 
+        for i in range(len(all_date_strings) - 1)
+    ]
+    interval_strings = [f"Desde el {x[0]} hasta el {x[1]}" for x in intervals]
+
+    # Find how many intevarls have passed
+    today = date.today()
+    for i, d in enumerate(processed_dates[1:]):
+        if today < d:
+            break 
+
+    # If the first interval is not over yet, take it anyway
+    if i == 0:
+        i = 1
+
+    return processed_dates, interval_strings, i

@@ -8,6 +8,9 @@ import src.colors as colors
 import src.proceedings as proceedings
 
 
+# Read data from public spreadsheet to build the site
+all_date_strings = reader.read_dates_from_public_spreadsheet()
+all_dates, interval_strings, i = pp.process_all_date_strings(all_date_strings)
 
 
 
@@ -28,45 +31,7 @@ st.write(intro_text)
 
 st.header("Parámetros de entrada")
 
-
 uploaded_file = st.file_uploader("Elige un archivo")
-
-all_date_strings = [
-    "2023-09-01",
-    "2023-09-22",
-    "2023-10-06",
-    "2023-10-20",
-    "2023-11-03",
-    "2023-11-17",
-    "2023-12-08",
-    "2023-12-22",
-    "2024-01-19",
-    "2024-02-02",
-    "2024-02-23",
-    "2024-03-08",
-    "2024-03-22",
-    "2024-04-19",
-    "2024-05-03",
-    "2024-05-17",
-    "2024-05-31",
-    "2024-06-14"
-]
-intervals = [
-    [all_date_strings[i], all_date_strings[i+1]] 
-    for i in range(len(all_date_strings) - 1)
-]
-interval_strings = [f"Desde el {x[0]} hasta el {x[1]}" for x in intervals]
-
-# Find best interval
-today = date.today()
-for i, x in enumerate(all_date_strings[1:]):
-    d = date.fromisoformat(x)
-    if today < d:
-        break 
-
-# If the first interval is not over yet, take it anyway
-if i == 0:
-    i = 1
 
 option = st.selectbox(
     "Intervalo de estudio",
@@ -94,7 +59,6 @@ if st.button('Comenzar análisis', type="primary"):
     # Nivel 1
     st.write("Leyendo datos")
 
-    all_dates = [date.fromisoformat(x) for x in all_date_strings]
     checkpoint = interval_strings.index(option)+1
     today = date.today()
     raw_dataframes = reader.read_excel(uploaded_file)
