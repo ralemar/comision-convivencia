@@ -69,7 +69,9 @@ def get_number_of_CCC_downgrades(student_df, start_date, final_date):
 
 def is_there_any_CEG(student_df, start_date, final_date):
 
-    mask = (student_df[S.COLUMN_NAME_EVENT] == S.CEG_NAME)
+    old_mask = (student_df[S.COLUMN_NAME_EVENT] == S.CEG_NAME)
+    new_mask = (student_df[S.COLUMN_NAME_EVENT] == S.CEG_NEW_NAME)
+    mask = old_mask | new_mask
     CEGs_df = student_df[mask]
 
     # Number of CEG within the period

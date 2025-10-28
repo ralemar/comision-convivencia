@@ -10,7 +10,9 @@ def get_number_of_CCCs(student_df):
 
 def get_number_of_CEGs(student_df):
 
-    mask = (student_df[S.COLUMN_NAME_EVENT] == S.CEG_NAME)
+    old_mask = (student_df[S.COLUMN_NAME_EVENT] == S.CEG_NAME)
+    new_mask = (student_df[S.COLUMN_NAME_EVENT] == S.CEG_NEW_NAME)
+    mask = old_mask | new_mask
     N = len(student_df[mask])
 
     return N
